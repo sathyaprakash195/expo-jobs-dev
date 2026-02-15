@@ -1,16 +1,22 @@
 import CustomText from "@/components/ui/custom-text";
 import FlexBox from "@/components/ui/flexbox";
+import { getLoggedInUser } from "@/services/users";
+import { IUsersStore, useUsersStore } from "@/store/users-store";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 
 export default function Index() {
+  const { setUser } = useUsersStore() as IUsersStore;
   const router = useRouter();
   const chechAuthSession = async () => {
     try {
-      // for now navigate to welcome screen, later we will check for auth session and navigate accordingly
-      // simulate 2 seconds delay to show the loading screen
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      router.push("/(public)/welcome");
+      const response = await getLoggedInUser();
+      setUser(response.data);
+      const routes: any = {
+        job_seeker: "/(private)/job-seeker/home",
+        recruiter: "/(private)/recruiter/home",
+      };
+      router.push(routes[response.data.role]);
     } catch (error) {
       router.push("/(public)/welcome");
     }

@@ -2,6 +2,7 @@ import { PRIMARY_COLOR } from "@/constants";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
+import Toast from "react-native-toast-message";
 
 export default function RootLayout() {
   const customTheme = {
@@ -14,11 +15,13 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={customTheme}>
       <StatusBar style="inverted" />
+
       <Stack
         screenOptions={{
           headerShown: false,
         }}
       />
+      <Toast position="top" topOffset={50} />
     </PaperProvider>
   );
 }

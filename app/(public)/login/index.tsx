@@ -4,11 +4,14 @@ import CustomInput from "@/components/ui/custom-input";
 import CustomText from "@/components/ui/custom-text";
 import FlexBox from "@/components/ui/flexbox";
 import { PRIMARY_COLOR, USER_ROLES } from "@/constants";
-import { useRouter } from "expo-router";
+import { loginUser } from "@/services/users";
+import { IUsersStore, useUsersStore } from "@/store/users-store";
+import { RelativePathString, useRouter } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -23,7 +26,43 @@ const LoginScreen = () => {
       role: "",
     },
   });
-  const onSubmit = (data: any) => console.log(data);
+  const [loading, setLoading] = React.useState(false);
+  const { setUser }: IUsersStore = useUsersStore() as IUsersStore;
+  const onSubmit = async (data: any) => {
+    try {
+      setLoading(true);
+      const response = await loginUser(data);
+      if (response.success) {
+        const routes: any = {
+          job_seeker: "/(private)/job-seeker/home",
+          recruiter: "/(private)/recruiter/home",
+        };
+        Toast.show({
+          type: "success",
+          text1: "Login Successful",
+          text2: response.message,
+        });
+        setTimeout(() => {
+          setUser(response.data);
+          router.push(routes[data.role] as RelativePathString);
+        }, 1000);
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Login Failed",
+          text2: response.message,
+        });
+      }
+    } catch (error: any) {
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -113,8 +152,8 @@ const LoginScreen = () => {
                 name="password"
               />
 
-              <CustomButton onPress={handleSubmit(onSubmit)}>
-                Login
+              <CustomButton onPress={handleSubmit(onSubmit)} disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
               </CustomButton>
 
               <FlexBox flexDirection="row" justifyContent="center" gap={5}>

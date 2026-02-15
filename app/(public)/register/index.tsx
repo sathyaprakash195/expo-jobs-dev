@@ -4,11 +4,13 @@ import CustomInput from "@/components/ui/custom-input";
 import CustomText from "@/components/ui/custom-text";
 import FlexBox from "@/components/ui/flexbox";
 import { PRIMARY_COLOR, USER_ROLES } from "@/constants";
+import { registerUser } from "@/services/users";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const RegisterScreen = () => {
   const router = useRouter();
@@ -24,7 +26,29 @@ const RegisterScreen = () => {
       role: "",
     },
   });
-  const onSubmit = (data: any) => console.log(data);
+  const [loading, setLoading] = React.useState(false);
+  const onSubmit = async (data: any) => {
+    try {
+      setLoading(true);
+      const response = await registerUser(data);
+      Toast.show({
+        type: "success",
+        text1: "Registration Successful",
+        text2: "Please login to continue",
+      });
+      setTimeout(() => {
+        router.push("/(public)/login");
+      }, 2000);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Registration Failed",
+        text2: "Please try again later",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -133,8 +157,8 @@ const RegisterScreen = () => {
                 name="password"
               />
 
-              <CustomButton onPress={handleSubmit(onSubmit)}>
-                Register
+              <CustomButton disabled={loading} onPress={handleSubmit(onSubmit)}>
+                {loading ? "Registering..." : "Register"}
               </CustomButton>
 
               <FlexBox flexDirection="row" justifyContent="center" gap={5}>

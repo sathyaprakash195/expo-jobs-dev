@@ -1,7 +1,11 @@
 import React from "react";
 import { Button, ButtonProps } from "react-native-paper";
 
-const CustomButton = (props: ButtonProps) => {
+interface CustomButtonProps extends ButtonProps {
+  minWidth?: boolean;
+}
+
+const CustomButton = (props: CustomButtonProps) => {
   const { style, ...rest } = props;
   return (
     <Button
@@ -12,7 +16,7 @@ const CustomButton = (props: ButtonProps) => {
         alignItems: "center",
         borderRadius: 5,
         marginTop: 5,
-        width: "100%",
+        width: !props.minWidth ? "100%" : undefined,
       }}
       mode={props.mode || "contained"}
     >
