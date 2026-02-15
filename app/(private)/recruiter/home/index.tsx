@@ -43,6 +43,7 @@ const RecruiterHomepage = () => {
           backgroundColor: "#e9e7e7",
           borderTopColor: "#d1d1d1",
           borderTopWidth: 1,
+          zIndex: 100,
         }}
         activeColor={PRIMARY_COLOR}
         shifting={true}

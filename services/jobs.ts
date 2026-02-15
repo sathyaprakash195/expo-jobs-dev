@@ -22,7 +22,8 @@ export const getAllJobsOfRecruiter = async (recruiterId: number) => {
     const { data, error } = await supabaseConfig
       .from("jobs")
       .select("*")
-      .eq("recruiter_id", recruiterId);
+      .eq("recruiter_id", recruiterId)
+      .order("created_at", { ascending: true });
     if (error) {
       throw error;
     }

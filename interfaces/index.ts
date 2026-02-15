@@ -29,4 +29,5 @@ export interface IJob {
   skills_required: string[] | null;
 
   status: string | null;
+  company: string | null;
 }
