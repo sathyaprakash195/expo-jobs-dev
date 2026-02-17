@@ -132,3 +132,58 @@ export const logoutUser = async () => {
     throw error;
   }
 };
+
+export const updateUserProfile = async (payload: {
+  name: string;
+  resume_uri: string;
+  userId: string;
+}) => {
+  try {
+    let resume_url = "";
+    if (payload.resume_uri) {
+      const file = await fetch(payload.resume_uri);
+      const blob = await file.blob();
+      const arrayBuffer = await new Response(blob).arrayBuffer();
+      const uniqueFileName = `${Date.now()}_${payload.userId}.pdf`;
+
+      const { data, error: uploadError } = await supabaseConfig.storage
+        .from("main")
+        .upload(uniqueFileName, arrayBuffer, {
+          contentType: "application/pdf",
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: publicURLData } = supabaseConfig.storage
+        .from("main")
+        .getPublicUrl(uniqueFileName);
+
+      resume_url = publicURLData.publicUrl;
+    }
+
+    const { error, data } = await supabaseConfig
+      .from("user_profiles")
+      .update({
+        name: payload.name,
+        ...(resume_url ? { resume_url } : {}),
+      })
+      .eq("id", payload.userId)
+      .select("*")
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      success: true,
+      data: data || null,
+      message: "User profile updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    throw error;
+  }
+};

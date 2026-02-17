@@ -80,3 +80,20 @@ export const deleteJobById = async (jobId: number) => {
     throw error;
   }
 };
+
+export const getAllActiveJobs = async () => {
+  try {
+    const { data, error } = await supabaseConfig
+      .from("jobs")
+      .select("*")
+      .eq("status", "open")
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+    return { success: true, data };
+  } catch (error) {
+    throw error;
+  }
+};

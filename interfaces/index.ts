@@ -30,4 +30,5 @@ export interface IJob {
 
   status: string | null;
   company: string | null;
+  number_of_positions: number | null;
 }

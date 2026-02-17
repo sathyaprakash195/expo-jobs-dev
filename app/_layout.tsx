@@ -1,5 +1,5 @@
 import { PRIMARY_COLOR } from "@/constants";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import Toast from "react-native-toast-message";
@@ -12,9 +12,14 @@ export default function RootLayout() {
       primary: PRIMARY_COLOR,
     },
   };
+  const pathname = usePathname();
   return (
     <PaperProvider theme={customTheme}>
-      <StatusBar style="inverted" />
+      {pathname === "/job-seeker/home" ? (
+        <StatusBar style="auto" />
+      ) : (
+        <StatusBar style="inverted" />
+      )}
 
       <Stack
         screenOptions={{
