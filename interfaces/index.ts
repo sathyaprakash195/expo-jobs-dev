@@ -32,3 +32,16 @@ export interface IJob {
   company: string | null;
   number_of_positions: number | null;
 }
+
+export interface IApplication {
+  id: number;
+  created_at: string; // ISO timestamp
+  job_id: number;
+  job_seeker_id: number;
+  recruiter_id: number;
+  status: "applied" | "shortlisted" | "rejected" | "accepted";
+
+  // relation fields
+  job_seeker: IUser;
+  job: IJob;
+}

@@ -35,9 +35,9 @@ const JobsList = () => {
   }, []);
 
   return (
-    <FlexBox>
+    <FlexBox flex={1}>
       <JobsListHeader />
-      <FlexBox padding={20}>
+      <FlexBox flex={1} padding={20}>
         {loading ? (
           <FlexBox alignItems="center">
             <CustomText value="Loading jobs..." />
@@ -51,7 +51,8 @@ const JobsList = () => {
             data={jobs}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <Jobcard job={item} />}
-            contentContainerStyle={{ paddingTop: 10, paddingBottom: 100 }}
+            scrollEnabled={true}
+            contentContainerStyle={{ paddingBottom: 500 }}
           />
         )}
       </FlexBox>
